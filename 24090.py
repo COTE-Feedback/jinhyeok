@@ -1,30 +1,35 @@
-def quick_sort(A, p, r, K):
-    if p < r:
-        q = partition(A, p, r)
-        if q == K - 1:
-            print(A[q], A[q + 1])
-            return
-        elif q > K - 1:
-            quick_sort(A, p, q - 1, K)
-        else:
-            quick_sort(A, q + 1, r, K - q - 1)
+import sys
+sys.setrecursionlimit(int(1e6)) #재귀 깊이제한
+input = sys.stdin.readline
 
-def partition(A, p, r):
-    x = A[r]
-    i = p - 1
-    for j in range(p, r):
-        if A[j] <= x:
-            i += 1
-            A[i], A[j] = A[j], A[i]
-    A[i + 1], A[r] = A[r], A[i + 1]
-    return i + 1
+def partition(start,end):
+    global c, cnt, arr
+    pivot = arr[end]
+    i = start-1
+    for j in range(start,end): 
+        if arr[j] <= pivot: #pivot보다 작은 데이터 찾기
+            i +=1
+            arr[i], arr[j] = arr[j], arr[i]
+            cnt += 1
+            if cnt == c:
+                print(arr[i], arr[j])
 
-# 입력 받기
-N, K = map(int, input().split())
-A = list(map(int, input().split()))
+    if i+1 != end: #pivot의 위치 변환
+        arr[i+1], arr[end] = arr[end], arr[i+1]
+        cnt += 1
 
-# 초기 호출
-if K <= N - 1:
-    quick_sort(A, 0, N - 1, K)
-else:
-    print(-1)
+    return i+1
+
+def quick_sort(start, end):
+    if start >= end:
+        return
+    q = partition(start, end)
+    quick_sort(start, q-1)
+    quick_sort(q+1, end)
+
+if __name__ == "__main__":
+    n, c = map(int, input().split())
+    arr = list(map(int, input().split()))
+    cnt = 0
+    quick_sort(0, len(arr)-1)
+    if c > cnt: print(-1)
